@@ -58,7 +58,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Goals", href: "/finances/goals", icon: Target },
       { label: "Debt", href: "/finances/debts", icon: CreditCard },
       { label: "Net Worth", href: "/finances/networth", icon: TrendingUp },
-      { label: "Savings", href: "/finances/savings", icon: Landmark, comingSoon: true },
+      { label: "Savings", href: "/finances/savings", icon: Landmark },
     ],
   },
   {
