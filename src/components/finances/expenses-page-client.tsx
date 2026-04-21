@@ -4,6 +4,7 @@ import {
   Download,
   Plus,
   Receipt,
+  Repeat,
   Search,
   SlidersHorizontal,
   X,
@@ -12,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExpenseForm, type ExpenseFormSubmit } from "./expense-form";
 import { ExpenseList } from "./expense-list";
+import { RecurringExpensesPanel } from "./recurring-expenses-panel";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
@@ -56,12 +58,16 @@ const EMPTY_FILTERS: Filters = {
   dateTo: "",
 };
 
+type Tab = "entries" | "recurring";
+
 export function ExpensesPageClient() {
   const { items, loading, refresh } = useCollection("expenses");
+  const { items: recurringItems } = useCollection("recurringExpenses");
   const [mode, setMode] = useState<Mode>({ kind: "closed" });
   const [submitting, setSubmitting] = useState(false);
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [tab, setTab] = useState<Tab>("entries");
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -180,22 +186,137 @@ export function ExpensesPageClient() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => exportCollectionCsv("expenses")}
-            disabled={items.length === 0}
-          >
-            <Download className="h-4 w-4" />
-            Export CSV
-          </Button>
-          <Button onClick={() => setMode({ kind: "new" })}>
-            <Plus className="h-4 w-4" />
-            New expense
-          </Button>
-        </div>
+        {tab === "entries" && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => exportCollectionCsv("expenses")}
+              disabled={items.length === 0}
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+            <Button onClick={() => setMode({ kind: "new" })}>
+              <Plus className="h-4 w-4" />
+              New expense
+            </Button>
+          </div>
+        )}
       </header>
 
+      <div className="inline-flex rounded-md border border-border bg-card p-1">
+        <TabButton active={tab === "entries"} onClick={() => setTab("entries")}>
+          <Receipt className="h-3.5 w-3.5" />
+          Entries
+          <span className="ml-1 rounded bg-muted px-1.5 text-[10px] text-muted-foreground">
+            {items.length}
+          </span>
+        </TabButton>
+        <TabButton
+          active={tab === "recurring"}
+          onClick={() => setTab("recurring")}
+        >
+          <Repeat className="h-3.5 w-3.5" />
+          Recurring
+          <span className="ml-1 rounded bg-muted px-1.5 text-[10px] text-muted-foreground">
+            {recurringItems.length}
+          </span>
+        </TabButton>
+      </div>
+
+      {tab === "recurring" ? (
+        <RecurringExpensesPanel onDataChanged={refresh} />
+      ) : (
+        <ExpensesEntriesView
+          items={items}
+          filtered={filtered}
+          filters={filters}
+          setFilters={setFilters}
+          setFilter={setFilter}
+          showAdvanced={showAdvanced}
+          setShowAdvanced={setShowAdvanced}
+          activeAdvancedCount={activeAdvancedCount}
+          hasAnyFilter={hasAnyFilter}
+          totals={totals}
+          loading={loading}
+          monthStart={monthStart}
+          today={today}
+          onEdit={(expense) => setMode({ kind: "edit", expense })}
+          onDelete={handleDelete}
+        />
+      )}
+
+      <Drawer
+        open={mode.kind !== "closed"}
+        onClose={() => setMode({ kind: "closed" })}
+        title={mode.kind === "edit" ? "Edit expense" : "New expense"}
+        description={
+          mode.kind === "edit"
+            ? "Update the details below."
+            : "Log a new expense. Switch to Recurring to set up repeating rules."
+        }
+      >
+        {mode.kind !== "closed" && (
+          <ExpenseForm
+            defaultValues={mode.kind === "edit" ? mode.expense : undefined}
+            submitting={submitting}
+            submitLabel={mode.kind === "edit" ? "Save changes" : "Add expense"}
+            onCancel={() => setMode({ kind: "closed" })}
+            onSubmit={async (values) => {
+              if (mode.kind === "edit") {
+                await handleUpdate(mode.expense.id, values);
+              } else {
+                await handleCreate(values);
+              }
+            }}
+          />
+        )}
+      </Drawer>
+    </div>
+  );
+}
+
+type EntriesViewProps = {
+  items: Expense[];
+  filtered: Expense[];
+  filters: Filters;
+  setFilters: (f: Filters) => void;
+  setFilter: <K extends keyof Filters>(key: K, value: Filters[K]) => void;
+  showAdvanced: boolean;
+  setShowAdvanced: (v: boolean | ((v: boolean) => boolean)) => void;
+  activeAdvancedCount: number;
+  hasAnyFilter: boolean;
+  totals: {
+    monthTotal: number;
+    allTotal: number;
+    filteredTotal: number;
+    count: number;
+    filteredCount: number;
+  };
+  loading: boolean;
+  monthStart: string;
+  today: string;
+  onEdit: (expense: Expense) => void;
+  onDelete: (expense: Expense) => Promise<void>;
+};
+
+function ExpensesEntriesView({
+  items,
+  filtered,
+  filters,
+  setFilters,
+  setFilter,
+  showAdvanced,
+  setShowAdvanced,
+  activeAdvancedCount,
+  hasAnyFilter,
+  totals,
+  loading,
+  onEdit,
+  onDelete,
+}: EntriesViewProps) {
+  return (
+    <>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <TotalCard label="This month" value={formatMoney(totals.monthTotal)} />
         <TotalCard label="All time" value={formatMoney(totals.allTotal)} />
@@ -342,40 +463,38 @@ export function ExpensesPageClient() {
           ) : (
             <ExpenseList
               expenses={filtered}
-              onEdit={(expense) => setMode({ kind: "edit", expense })}
-              onDelete={handleDelete}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           )}
         </div>
       </div>
+    </>
+  );
+}
 
-      <Drawer
-        open={mode.kind !== "closed"}
-        onClose={() => setMode({ kind: "closed" })}
-        title={mode.kind === "edit" ? "Edit expense" : "New expense"}
-        description={
-          mode.kind === "edit"
-            ? "Update the details below."
-            : "Log a new expense. Recurring entries coming soon."
-        }
-      >
-        {mode.kind !== "closed" && (
-          <ExpenseForm
-            defaultValues={mode.kind === "edit" ? mode.expense : undefined}
-            submitting={submitting}
-            submitLabel={mode.kind === "edit" ? "Save changes" : "Add expense"}
-            onCancel={() => setMode({ kind: "closed" })}
-            onSubmit={async (values) => {
-              if (mode.kind === "edit") {
-                await handleUpdate(mode.expense.id, values);
-              } else {
-                await handleCreate(values);
-              }
-            }}
-          />
-        )}
-      </Drawer>
-    </div>
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition",
+        active
+          ? "bg-accent text-foreground"
+          : "text-muted-foreground hover:bg-accent hover:text-foreground"
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
