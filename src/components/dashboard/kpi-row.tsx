@@ -7,6 +7,7 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { formatMoney, startOfMonthIso, todayIso, addDaysIso } from "@/lib/format";
 import { useCollection } from "@/lib/use-collection";
@@ -124,8 +125,8 @@ export function KpiRow() {
 
 function KpiCard({ kpi }: { kpi: Kpi }) {
   const Icon = kpi.icon;
-  return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+  const body = (
+    <>
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-muted-foreground">{kpi.label}</span>
         <Icon className="h-4 w-4 text-muted-foreground" />
@@ -142,6 +143,15 @@ function KpiCard({ kpi }: { kpi: Kpi }) {
           tone={kpi.progress.tone}
         />
       )}
-    </div>
+    </>
   );
+  const base = "rounded-xl border border-border bg-card p-4 shadow-sm";
+  if (kpi.href) {
+    return (
+      <Link href={kpi.href} className={`${base} block transition hover:border-foreground/20`}>
+        {body}
+      </Link>
+    );
+  }
+  return <div className={base}>{body}</div>;
 }

@@ -1,13 +1,23 @@
 import {
   BUDGET_PERIOD_LABELS,
+  DEBT_TYPE_LABELS,
   EXPENSE_CATEGORY_LABELS,
   FREQUENCY_LABELS,
+  GOAL_TYPE_LABELS,
+  INCOME_SOURCE_LABELS,
   PRIORITY_LABELS,
 } from "./enum-labels";
 import { formatDate, formatMoney } from "./format";
 import { getStorage } from "./storage";
 
-export type SearchResultType = "expense" | "task" | "bill" | "budget";
+export type SearchResultType =
+  | "expense"
+  | "task"
+  | "bill"
+  | "budget"
+  | "income"
+  | "goal"
+  | "debt";
 
 export type SearchResult = {
   type: SearchResultType;
@@ -19,12 +29,23 @@ export type SearchResult = {
 
 export const SEARCH_TYPE_LABEL: Record<SearchResultType, string> = {
   expense: "Expenses",
-  task: "Tasks",
+  income: "Income",
   bill: "Bills",
   budget: "Budgets",
+  goal: "Goals",
+  debt: "Debts",
+  task: "Tasks",
 };
 
-const TYPE_ORDER: SearchResultType[] = ["expense", "bill", "task", "budget"];
+const TYPE_ORDER: SearchResultType[] = [
+  "expense",
+  "income",
+  "bill",
+  "budget",
+  "goal",
+  "debt",
+  "task",
+];
 
 function matches(query: string, ...fields: (string | undefined | null)[]): boolean {
   const q = query.trim().toLowerCase();
@@ -37,12 +58,16 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
   if (!q) return [];
 
   const storage = getStorage();
-  const [expenses, tasks, bills, budgets] = await Promise.all([
-    storage.list("expenses"),
-    storage.list("tasks"),
-    storage.list("bills"),
-    storage.list("budgets"),
-  ]);
+  const [expenses, tasks, bills, budgets, incomes, goals, debts] =
+    await Promise.all([
+      storage.list("expenses"),
+      storage.list("tasks"),
+      storage.list("bills"),
+      storage.list("budgets"),
+      storage.list("incomes"),
+      storage.list("goals"),
+      storage.list("debts"),
+    ]);
 
   const out: SearchResult[] = [];
 
@@ -98,6 +123,50 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
           BUDGET_PERIOD_LABELS[b.period]
         }${b.rollover ? " · rollover" : ""}`,
         href: "/finances/budgets",
+      });
+    }
+  }
+
+  for (const i of incomes) {
+    if (matches(q, i.sourceName, i.notes, INCOME_SOURCE_LABELS[i.source])) {
+      out.push({
+        type: "income",
+        id: i.id,
+        title: i.sourceName,
+        subtitle: `${formatMoney(i.netAmount, { cents: true })} net · ${
+          INCOME_SOURCE_LABELS[i.source]
+        } · ${formatDate(i.date)}`,
+        href: "/finances/income",
+      });
+    }
+  }
+
+  for (const g of goals) {
+    if (matches(q, g.name, g.notes, GOAL_TYPE_LABELS[g.type])) {
+      const pct =
+        g.targetAmount > 0 ? Math.round((g.currentAmount / g.targetAmount) * 100) : 0;
+      out.push({
+        type: "goal",
+        id: g.id,
+        title: g.name,
+        subtitle: `${pct}% · ${formatMoney(g.currentAmount)} / ${formatMoney(
+          g.targetAmount
+        )}${g.deadline ? ` · by ${formatDate(g.deadline)}` : ""}`,
+        href: "/finances/goals",
+      });
+    }
+  }
+
+  for (const d of debts) {
+    if (matches(q, d.name, d.notes, DEBT_TYPE_LABELS[d.type])) {
+      out.push({
+        type: "debt",
+        id: d.id,
+        title: d.name,
+        subtitle: `${formatMoney(d.balance, { cents: true })} · ${d.interestRate.toFixed(
+          2
+        )}% APR · ${DEBT_TYPE_LABELS[d.type]}`,
+        href: "/finances/debts",
       });
     }
   }

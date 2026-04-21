@@ -2,10 +2,13 @@
 
 import {
   CalendarClock,
+  CreditCard,
   ListChecks,
   PiggyBank,
   Receipt,
   Search,
+  Target,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -21,9 +24,12 @@ import { cn } from "@/lib/utils";
 
 const TYPE_ICON: Record<SearchResultType, LucideIcon> = {
   expense: Receipt,
+  income: Wallet,
   task: ListChecks,
   bill: CalendarClock,
   budget: PiggyBank,
+  goal: Target,
+  debt: CreditCard,
 };
 
 export function GlobalSearch() {
