@@ -24,6 +24,7 @@ const CSV_COLLECTIONS = [
   { key: "bills", label: "Bills" },
   { key: "budgets", label: "Budgets" },
   { key: "goals", label: "Goals" },
+  { key: "debts", label: "Debts" },
   { key: "tasks", label: "Tasks" },
 ] as const;
 

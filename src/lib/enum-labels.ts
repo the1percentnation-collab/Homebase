@@ -12,6 +12,7 @@ import {
   INCOME_SOURCES,
   GOAL_TYPES,
   GOAL_HORIZONS,
+  DEBT_TYPES,
 } from "./schema";
 
 function titleCase(s: string): string {
@@ -38,6 +39,7 @@ export const PRIORITY_LABELS = buildLabels(PRIORITIES);
 export const BUDGET_PERIOD_LABELS = buildLabels(BUDGET_PERIODS);
 export const INCOME_SOURCE_LABELS = buildLabels(INCOME_SOURCES);
 export const GOAL_TYPE_LABELS = buildLabels(GOAL_TYPES);
+export const DEBT_TYPE_LABELS = buildLabels(DEBT_TYPES);
 
 export const GOAL_HORIZON_LABELS: Record<
   (typeof GOAL_HORIZONS)[number],
