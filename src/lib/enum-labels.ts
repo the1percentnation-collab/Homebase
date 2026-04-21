@@ -10,6 +10,8 @@ import {
   PRIORITIES,
   BUDGET_PERIODS,
   INCOME_SOURCES,
+  GOAL_TYPES,
+  GOAL_HORIZONS,
 } from "./schema";
 
 function titleCase(s: string): string {
@@ -35,6 +37,25 @@ export const TASK_STATUS_LABELS = buildLabels(TASK_STATUSES);
 export const PRIORITY_LABELS = buildLabels(PRIORITIES);
 export const BUDGET_PERIOD_LABELS = buildLabels(BUDGET_PERIODS);
 export const INCOME_SOURCE_LABELS = buildLabels(INCOME_SOURCES);
+export const GOAL_TYPE_LABELS = buildLabels(GOAL_TYPES);
+
+export const GOAL_HORIZON_LABELS: Record<
+  (typeof GOAL_HORIZONS)[number],
+  string
+> = {
+  short: "Short-term",
+  mid: "Mid-term",
+  long: "Long-term",
+};
+
+export const GOAL_HORIZON_HINT: Record<
+  (typeof GOAL_HORIZONS)[number],
+  string
+> = {
+  short: "Within the next year",
+  mid: "1 – 5 years",
+  long: "5+ years",
+};
 
 // Tailwind class suggestions per category — drives colored chips in lists.
 export const EXPENSE_CATEGORY_ACCENT: Record<ExpenseCategory, string> = {
