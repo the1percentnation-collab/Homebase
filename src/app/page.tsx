@@ -1,13 +1,13 @@
-export default function Home() {
+import { LayoutDashboard } from "lucide-react";
+import { PlaceholderPage } from "@/components/ui/placeholder-page";
+
+export default function DashboardHome() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-8">
-      <div className="max-w-xl text-center space-y-4">
-        <h1 className="text-3xl font-semibold">Homebase</h1>
-        <p className="text-muted-foreground">
-          Your personal Home &amp; Finance Command Center. Scaffolding is ready — the
-          dashboard shell and first modules come next.
-        </p>
-      </div>
-    </main>
+    <PlaceholderPage
+      title="Dashboard"
+      description="KPI cards, upcoming bills, overdue tasks, goal progress, and a calendar preview will live here."
+      icon={LayoutDashboard}
+      taskNumber={5}
+    />
   );
 }
