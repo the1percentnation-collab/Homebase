@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Receipt, Search } from "lucide-react";
+import { Download, Plus, Receipt, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExpenseForm, type ExpenseFormSubmit } from "./expense-form";
@@ -12,6 +12,7 @@ import { Select } from "@/components/ui/select";
 import {
   EXPENSE_CATEGORY_LABELS,
 } from "@/lib/enum-labels";
+import { exportCollectionCsv } from "@/lib/export";
 import { formatMoney, startOfMonthIso, todayIso } from "@/lib/format";
 import { EXPENSE_CATEGORIES, type Expense } from "@/lib/schema";
 import { getStorage } from "@/lib/storage";
@@ -120,10 +121,20 @@ export function ExpensesPageClient() {
             </p>
           </div>
         </div>
-        <Button onClick={() => setMode({ kind: "new" })}>
-          <Plus className="h-4 w-4" />
-          New expense
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => exportCollectionCsv("expenses")}
+            disabled={items.length === 0}
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+          <Button onClick={() => setMode({ kind: "new" })}>
+            <Plus className="h-4 w-4" />
+            New expense
+          </Button>
+        </div>
       </header>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CalendarClock, Plus } from "lucide-react";
+import { AlertTriangle, CalendarClock, Download, Plus } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { BillForm, type BillFormSubmit } from "./bill-form";
 import { BillList } from "./bill-list";
@@ -9,6 +9,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { Drawer } from "@/components/ui/drawer";
 import { advanceDueDate } from "@/lib/bill-helpers";
 import { DEFAULT_USER_ID } from "@/lib/constants";
+import { exportCollectionCsv } from "@/lib/export";
 import {
   addDaysIso,
   formatDate,
@@ -145,10 +146,20 @@ export function BillsPageClient() {
             </p>
           </div>
         </div>
-        <Button onClick={() => setMode({ kind: "new" })}>
-          <Plus className="h-4 w-4" />
-          New bill
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => exportCollectionCsv("bills")}
+            disabled={items.length === 0}
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+          <Button onClick={() => setMode({ kind: "new" })}>
+            <Plus className="h-4 w-4" />
+            New bill
+          </Button>
+        </div>
       </header>
 
       {summary.flagged.length > 0 && (

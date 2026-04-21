@@ -1,4 +1,5 @@
 import { Settings } from "lucide-react";
+import { DataPanel } from "@/components/settings/data-panel";
 
 export default function SettingsPage() {
   return (
@@ -8,29 +9,23 @@ export default function SettingsPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
       </div>
 
-      <section className="rounded-xl border border-border bg-card p-5 space-y-3">
-        <h2 className="text-sm font-medium">Appearance</h2>
+      <section className="rounded-xl border border-border bg-card p-5 space-y-2">
+        <h2 className="text-sm font-semibold">Appearance</h2>
         <p className="text-sm text-muted-foreground">
-          Toggle light and dark mode using the icon in the top bar. Your choice is
-          remembered on this device.
+          Toggle light and dark mode using the icon in the top bar. Your choice
+          is remembered on this device.
         </p>
       </section>
 
-      <section className="rounded-xl border border-border bg-card p-5 space-y-3">
-        <h2 className="text-sm font-medium">Household</h2>
+      <section className="rounded-xl border border-border bg-card p-5 space-y-2">
+        <h2 className="text-sm font-semibold">Household</h2>
         <p className="text-sm text-muted-foreground">
-          User profiles (you + your partner), roles, and shared-list permissions will
-          live here. Coming alongside cloud sync.
+          User profiles (you + your partner), roles, and shared-list permissions
+          will live here. Coming alongside cloud sync.
         </p>
       </section>
 
-      <section className="rounded-xl border border-border bg-card p-5 space-y-3">
-        <h2 className="text-sm font-medium">Data</h2>
-        <p className="text-sm text-muted-foreground">
-          Export (CSV/JSON), import, and reset. Enabled once the first modules start
-          writing data.
-        </p>
-      </section>
+      <DataPanel />
     </div>
   );
 }

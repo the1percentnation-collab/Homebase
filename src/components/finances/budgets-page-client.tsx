@@ -1,6 +1,6 @@
 "use client";
 
-import { PiggyBank, Plus } from "lucide-react";
+import { Download, PiggyBank, Plus } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { BudgetForm, type BudgetFormSubmit } from "./budget-form";
 import { BudgetList } from "./budget-list";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { computeBudgetStatus } from "@/lib/budget-helpers";
+import { exportCollectionCsv } from "@/lib/export";
 import { formatMoney } from "@/lib/format";
 import type { Budget } from "@/lib/schema";
 import { getStorage } from "@/lib/storage";
@@ -98,10 +99,20 @@ export function BudgetsPageClient() {
             </p>
           </div>
         </div>
-        <Button onClick={() => setMode({ kind: "new" })}>
-          <Plus className="h-4 w-4" />
-          New budget
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => exportCollectionCsv("budgets")}
+            disabled={budgets.length === 0}
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+          <Button onClick={() => setMode({ kind: "new" })}>
+            <Plus className="h-4 w-4" />
+            New budget
+          </Button>
+        </div>
       </header>
 
       <div className="rounded-xl border border-border bg-card p-4 space-y-3">

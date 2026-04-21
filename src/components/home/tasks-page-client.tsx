@@ -1,12 +1,13 @@
 "use client";
 
-import { ListChecks, Plus } from "lucide-react";
+import { Download, ListChecks, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TaskForm, type TaskFormSubmit } from "./task-form";
 import { TaskList } from "./task-list";
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
+import { exportCollectionCsv } from "@/lib/export";
 import {
   TASK_VIEW_LABELS,
   TASK_VIEW_ORDER,
@@ -141,10 +142,20 @@ export function TasksPageClient() {
             </p>
           </div>
         </div>
-        <Button onClick={() => setMode({ kind: "new" })}>
-          <Plus className="h-4 w-4" />
-          New task
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => exportCollectionCsv("tasks")}
+            disabled={items.length === 0}
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+          <Button onClick={() => setMode({ kind: "new" })}>
+            <Plus className="h-4 w-4" />
+            New task
+          </Button>
+        </div>
       </header>
 
       <div className="rounded-xl border border-border bg-card">
