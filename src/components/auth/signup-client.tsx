@@ -16,6 +16,7 @@ export function SignupClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [confirmEmailSent, setConfirmEmailSent] = useState(false);
@@ -37,7 +38,8 @@ export function SignupClient() {
     setError(null);
     setSubmitting(true);
     try {
-      const result = await signUp(email.trim(), password);
+      const normalizedCode = inviteCode.trim().toUpperCase() || undefined;
+      const result = await signUp(email.trim(), password, normalizedCode);
       if (result.needsEmailConfirm) {
         setConfirmEmailSent(true);
       } else {
@@ -62,6 +64,12 @@ export function SignupClient() {
             We sent a confirmation link to <strong>{email}</strong>. Click it,
             then return here to sign in.
           </p>
+          {inviteCode && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Your invite code is saved — you&apos;ll join the household on
+              first sign-in.
+            </p>
+          )}
           <Link
             href="/login"
             className="mt-4 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
@@ -82,8 +90,8 @@ export function SignupClient() {
 
       <h1 className="text-2xl font-semibold tracking-tight">Create account</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        We&apos;ll create your household on first sign-in. You can invite your
-        partner after.
+        Starting fresh? We&apos;ll create your household. Joining your partner?
+        Use their invite code.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -121,6 +129,21 @@ export function SignupClient() {
             required
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
+          />
+        </FormField>
+        <FormField
+          label="Invite code"
+          htmlFor="signup-invite"
+          hint="Optional — leave blank to create your own household"
+        >
+          <Input
+            id="signup-invite"
+            type="text"
+            placeholder="ABC123"
+            maxLength={6}
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+            className="uppercase tracking-widest"
           />
         </FormField>
 

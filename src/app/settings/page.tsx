@@ -1,6 +1,7 @@
 import { Settings } from "lucide-react";
 import { AccountPanel } from "@/components/settings/account-panel";
 import { DataPanel } from "@/components/settings/data-panel";
+import { HouseholdPanel } from "@/components/settings/household-panel";
 
 export default function SettingsPage() {
   return (
@@ -11,20 +12,13 @@ export default function SettingsPage() {
       </div>
 
       <AccountPanel />
+      <HouseholdPanel />
 
       <section className="rounded-xl border border-border bg-card p-5 space-y-2">
         <h2 className="text-sm font-semibold">Appearance</h2>
         <p className="text-sm text-muted-foreground">
           Toggle light and dark mode using the icon in the top bar. Your choice
           is remembered on this device.
-        </p>
-      </section>
-
-      <section className="rounded-xl border border-border bg-card p-5 space-y-2">
-        <h2 className="text-sm font-semibold">Household</h2>
-        <p className="text-sm text-muted-foreground">
-          Household membership and invite codes land alongside the cloud
-          schema (Task 21).
         </p>
       </section>
 
