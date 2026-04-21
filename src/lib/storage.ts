@@ -170,11 +170,38 @@ let adapterInstance: StorageAdapter | null = null;
 
 export function getStorage(): StorageAdapter {
   if (!adapterInstance) {
-    adapterInstance = new LocalStorageAdapter();
+    adapterInstance = createDefaultAdapter();
   }
   return adapterInstance;
 }
 
 export function setStorage(adapter: StorageAdapter): void {
   adapterInstance = adapter;
+}
+
+function createDefaultAdapter(): StorageAdapter {
+  // When cloud env vars are set we use Supabase; otherwise we stay on
+  // LocalStorageAdapter so the app runs without any backend configured.
+  // Import lazily to avoid pulling the Supabase bundle into local-only use.
+  if (typeof process !== "undefined") {
+    const hasCloud =
+      Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    if (hasCloud) {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { SupabaseAdapter } = require("./supabase-adapter") as {
+        SupabaseAdapter: new () => StorageAdapter;
+      };
+      return new SupabaseAdapter();
+    }
+  }
+  return new LocalStorageAdapter();
+}
+
+export function describeStorageMode(): "cloud" | "local" {
+  if (typeof process === "undefined") return "local";
+  const hasCloud =
+    Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+    Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  return hasCloud ? "cloud" : "local";
 }
