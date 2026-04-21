@@ -1,13 +1,5 @@
-import { PiggyBank } from "lucide-react";
-import { PlaceholderPage } from "@/components/ui/placeholder-page";
+import { BudgetsPageClient } from "@/components/finances/budgets-page-client";
 
 export default function BudgetsPage() {
-  return (
-    <PlaceholderPage
-      title="Budgets"
-      description="Monthly/weekly budgets per category with progress bars, threshold alerts, and rollover."
-      icon={PiggyBank}
-      taskNumber={7}
-    />
-  );
+  return <BudgetsPageClient />;
 }
