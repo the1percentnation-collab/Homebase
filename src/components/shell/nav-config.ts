@@ -57,7 +57,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Bills", href: "/finances/bills", icon: CalendarClock },
       { label: "Goals", href: "/finances/goals", icon: Target },
       { label: "Debt", href: "/finances/debts", icon: CreditCard },
-      { label: "Net Worth", href: "/finances/networth", icon: TrendingUp, comingSoon: true },
+      { label: "Net Worth", href: "/finances/networth", icon: TrendingUp },
       { label: "Savings", href: "/finances/savings", icon: Landmark, comingSoon: true },
     ],
   },
