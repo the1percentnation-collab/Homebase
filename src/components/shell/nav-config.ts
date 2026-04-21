@@ -52,7 +52,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Finances",
     items: [
       { label: "Expenses", href: "/finances/expenses", icon: Receipt },
-      { label: "Income", href: "/finances/income", icon: Wallet, comingSoon: true },
+      { label: "Income", href: "/finances/income", icon: Wallet },
       { label: "Budgets", href: "/finances/budgets", icon: PiggyBank },
       { label: "Bills", href: "/finances/bills", icon: CalendarClock },
       { label: "Goals", href: "/finances/goals", icon: Target, comingSoon: true },

@@ -9,6 +9,7 @@ import {
   TASK_STATUSES,
   PRIORITIES,
   BUDGET_PERIODS,
+  INCOME_SOURCES,
 } from "./schema";
 
 function titleCase(s: string): string {
@@ -33,6 +34,7 @@ export const FREQUENCY_LABELS = buildLabels(FREQUENCIES);
 export const TASK_STATUS_LABELS = buildLabels(TASK_STATUSES);
 export const PRIORITY_LABELS = buildLabels(PRIORITIES);
 export const BUDGET_PERIOD_LABELS = buildLabels(BUDGET_PERIODS);
+export const INCOME_SOURCE_LABELS = buildLabels(INCOME_SOURCES);
 
 // Tailwind class suggestions per category — drives colored chips in lists.
 export const EXPENSE_CATEGORY_ACCENT: Record<ExpenseCategory, string> = {

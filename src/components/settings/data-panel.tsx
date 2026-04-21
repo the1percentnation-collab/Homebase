@@ -20,6 +20,7 @@ import { getStorage } from "@/lib/storage";
 
 const CSV_COLLECTIONS = [
   { key: "expenses", label: "Expenses" },
+  { key: "incomes", label: "Income" },
   { key: "bills", label: "Bills" },
   { key: "budgets", label: "Budgets" },
   { key: "tasks", label: "Tasks" },
