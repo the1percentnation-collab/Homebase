@@ -14,6 +14,7 @@ import {
   GOAL_HORIZONS,
   DEBT_TYPES,
   ACCOUNT_TYPES,
+  MAINTENANCE_CATEGORIES,
 } from "./schema";
 
 function titleCase(s: string): string {
@@ -42,6 +43,38 @@ export const INCOME_SOURCE_LABELS = buildLabels(INCOME_SOURCES);
 export const GOAL_TYPE_LABELS = buildLabels(GOAL_TYPES);
 export const DEBT_TYPE_LABELS = buildLabels(DEBT_TYPES);
 export const ACCOUNT_TYPE_LABELS = buildLabels(ACCOUNT_TYPES);
+
+export const MAINTENANCE_CATEGORY_LABELS: Record<
+  (typeof MAINTENANCE_CATEGORIES)[number],
+  string
+> = {
+  hvac: "HVAC",
+  plumbing: "Plumbing",
+  electrical: "Electrical",
+  appliance: "Appliance",
+  exterior: "Exterior",
+  yard: "Yard",
+  cleaning: "Cleaning",
+  safety: "Safety",
+  seasonal: "Seasonal",
+  other: "Other",
+};
+
+export const MAINTENANCE_CATEGORY_ACCENT: Record<
+  (typeof MAINTENANCE_CATEGORIES)[number],
+  string
+> = {
+  hvac: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
+  plumbing: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+  electrical: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  appliance: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+  exterior: "bg-stone-500/10 text-stone-700 dark:text-stone-300",
+  yard: "bg-lime-500/10 text-lime-700 dark:text-lime-300",
+  cleaning: "bg-teal-500/10 text-teal-700 dark:text-teal-300",
+  safety: "bg-red-500/10 text-red-700 dark:text-red-300",
+  seasonal: "bg-orange-500/10 text-orange-700 dark:text-orange-300",
+  other: "bg-muted text-muted-foreground",
+};
 
 export const GOAL_HORIZON_LABELS: Record<
   (typeof GOAL_HORIZONS)[number],
