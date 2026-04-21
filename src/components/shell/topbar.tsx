@@ -2,6 +2,7 @@
 
 import { Menu } from "lucide-react";
 import { GlobalSearch } from "./global-search";
+import { NotificationsMenu } from "./notifications-menu";
 import { QuickAddMenu } from "./quick-add-menu";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -27,6 +28,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       <div className="flex items-center gap-2">
         <QuickAddMenu />
+        <NotificationsMenu />
         <ThemeToggle />
       </div>
     </header>
