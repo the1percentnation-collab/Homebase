@@ -29,6 +29,7 @@ const CSV_COLLECTIONS = [
   { key: "netWorthSnapshots", label: "Net worth snapshots" },
   { key: "tasks", label: "Tasks" },
   { key: "maintenanceItems", label: "Maintenance" },
+  { key: "inventoryItems", label: "Inventory" },
 ] as const;
 
 type ImportState =

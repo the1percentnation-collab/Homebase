@@ -15,6 +15,7 @@ import {
   DEBT_TYPES,
   ACCOUNT_TYPES,
   MAINTENANCE_CATEGORIES,
+  INVENTORY_CATEGORIES,
 } from "./schema";
 
 function titleCase(s: string): string {
@@ -58,6 +59,21 @@ export const MAINTENANCE_CATEGORY_LABELS: Record<
   safety: "Safety",
   seasonal: "Seasonal",
   other: "Other",
+};
+
+export const INVENTORY_CATEGORY_LABELS = buildLabels(INVENTORY_CATEGORIES);
+
+export const INVENTORY_CATEGORY_ACCENT: Record<
+  (typeof INVENTORY_CATEGORIES)[number],
+  string
+> = {
+  appliance: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+  electronics: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
+  furniture: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  tool: "bg-stone-500/10 text-stone-700 dark:text-stone-300",
+  vehicle: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+  jewelry: "bg-pink-500/10 text-pink-700 dark:text-pink-300",
+  other: "bg-muted text-muted-foreground",
 };
 
 export const MAINTENANCE_CATEGORY_ACCENT: Record<

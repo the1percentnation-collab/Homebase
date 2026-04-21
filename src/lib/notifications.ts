@@ -19,7 +19,8 @@ export type NotificationType =
   | "task_today"
   | "task_overdue"
   | "goal_deadline"
-  | "debt_growing";
+  | "debt_growing"
+  | "warranty_expiring";
 
 export type Notification = {
   id: string; // unique, stable per source record
@@ -37,6 +38,7 @@ const TYPE_ORDER: NotificationType[] = [
   "debt_growing",
   "bill_due",
   "task_today",
+  "warranty_expiring",
   "goal_deadline",
 ];
 
@@ -46,21 +48,24 @@ export const NOTIFICATION_GROUP_LABEL: Record<NotificationType, string> = {
   debt_growing: "Debts outpacing payments",
   bill_due: "Bills due soon",
   task_today: "Tasks due today",
+  warranty_expiring: "Warranties expiring",
   goal_deadline: "Goals nearing deadline",
 };
 
 export async function gatherNotifications(): Promise<Notification[]> {
   const storage = getStorage();
-  const [bills, tasks, goals, debts] = await Promise.all([
+  const [bills, tasks, goals, debts, inventory] = await Promise.all([
     storage.list("bills"),
     storage.list("tasks"),
     storage.list("goals"),
     storage.list("debts"),
+    storage.list("inventoryItems"),
   ]);
 
   const today = todayIso();
   const in7 = addDaysIso(7);
   const in30 = addDaysIso(30);
+  const in60 = addDaysIso(60);
   const out: Notification[] = [];
 
   for (const b of bills) {
@@ -142,6 +147,21 @@ export async function gatherNotifications(): Promise<Notification[]> {
         href: "/finances/debts",
         severity: "danger",
         sortKey: "0",
+      });
+    }
+  }
+
+  for (const i of inventory) {
+    if (!i.warrantyExpiry) continue;
+    if (i.warrantyExpiry >= today && i.warrantyExpiry <= in60) {
+      out.push({
+        id: `warranty_expiring:${i.id}`,
+        type: "warranty_expiring",
+        title: i.name,
+        detail: `Warranty ${formatRelative(i.warrantyExpiry)} (${formatDate(i.warrantyExpiry, "MMM d")})`,
+        href: "/home/inventory",
+        severity: "warning",
+        sortKey: i.warrantyExpiry,
       });
     }
   }
