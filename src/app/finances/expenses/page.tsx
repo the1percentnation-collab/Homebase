@@ -1,13 +1,10 @@
-import { Receipt } from "lucide-react";
-import { PlaceholderPage } from "@/components/ui/placeholder-page";
+import { Suspense } from "react";
+import { ExpensesPageClient } from "@/components/finances/expenses-page-client";
 
 export default function ExpensesPage() {
   return (
-    <PlaceholderPage
-      title="Expenses"
-      description="Log expenses by category, date, payment method, and essential/discretionary tag. Recurring entries supported."
-      icon={Receipt}
-      taskNumber={6}
-    />
+    <Suspense fallback={<div className="text-sm text-muted-foreground">Loading…</div>}>
+      <ExpensesPageClient />
+    </Suspense>
   );
 }
